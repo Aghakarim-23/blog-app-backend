@@ -39,7 +39,9 @@ userSchema.pre("save", async function () {
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!candidatePassword || !this.password) throw new Error("Missing password");
   return await bcrypt.compare(candidatePassword, this.password);
 };
+
 
 export default mongoose.model("User", userSchema);
