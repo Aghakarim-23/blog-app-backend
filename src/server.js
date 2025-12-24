@@ -1,15 +1,18 @@
 import express from "express";
 import cors from "cors";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { getConnectDb } from "./config/db.js";
+
+dotenv.config()
+await getConnectDb()
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = 8001
+const PORT = process.env.PORT || 8001
 
 
 app.listen(PORT, () => {
-    console.log(`The server is running on ${PORT}`)
+    console.log(`🚀 Server is running on ${PORT}`)
 })
