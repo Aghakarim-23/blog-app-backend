@@ -41,11 +41,29 @@ export const getSinglePost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await Post.findById(id)
-        .populate("author", "username")
-    ;
-    if (!post) return res.status(404).json({message: "Post is not found"});
+    const post = await Post.findById(id).populate("author", "username");
+    if (!post) return res.status(404).json({ message: "Post is not found" });
     res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "Server error" });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    if (post.author.toString() !== req.user.id)
+      return res.status(403).json({ message: "Not authorized" });
+
+    await post.deleteOne();
+
+    res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message || "Server error" });
