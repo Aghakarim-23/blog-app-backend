@@ -36,3 +36,18 @@ export const getPublicPosts = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getSinglePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findById(id)
+        .populate("author", "username")
+    ;
+    if (!post) return res.status(404).json({message: "Post is not found"});
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "Server error" });
+  }
+};
